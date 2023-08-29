@@ -1,87 +1,30 @@
-const canvas = document.getElementById('canvas'); //Canvas API
-const increaseBtn = document.getElementById('increase')
-const decreaseBtn = document.getElementById('decrease')
-const sizeElem = document.getElementById('size')
-const colorBoard = document.getElementById('color')
-const clearElem = document.getElementById('clear')
-const ctx = canvas.getContext('2d');
+const btn = document.getElementById("button")
+const toasts = document.getElementById("toasts")
 
-let size = 20
-let isPressed = false
-let color = "black"
-let x 
-let y
+const messages = ['Hey there', 'How you doing!', 'somethingscbsjc', 'Whatre you doin']
 
-canvas.addEventListener('mousedown', (e) => {
-    isPressed = true
+const types = ['info', 'success', 'error']
 
-    x = e.offsetX
-    y = e.offsetY
-})
+btn.addEventListener('click', () => createNoticification())
 
-canvas.addEventListener('mouseup', (e) => {
-    isPressed = false
-
-    x = undefined
-    y = undefined
-})
-
-canvas.addEventListener('mousemove', (e) => {
-    if(isPressed){
-        const x2 = e.offsetX
-        const y2 = e.offsetY
-
-        drawCircle(x2, y2)
-        drawLine(x, y, x2, y2)
-
-        x = x2
-        y = y2
-    }
+function createNoticification(message = null, type = null) {
+    const notif = document.createElement('div')
+    notif.classList.add('toast')
+    notif.classList.add(type ? type : getRandomType())
     
-})
+    notif.innerText = message ? message : getRandomMessage()
 
-function updateSizeOnScreen() {
-    sizeElem.innerText = size
+    toasts.appendChild(notif)
+
+    setTimeout(() => {
+        notif.remove()
+    }, 3000)
 }
 
-function drawCircle(x, y) {
-    ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI*2, true)
-    ctx.fillStyle = color
-    ctx.fill()
+function getRandomMessage() {
+    return messages[Math.floor(Math.random()*messages.length)]
 }
 
-function drawLine(x1, y1, x2, y2) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1)
-    ctx.lineTo(x2, y2)
-    ctx.strokeStyle = color
-    ctx.lineWidth = size * 2
-    ctx.stroke()
+function getRandomType() {
+    return types[Math.floor(Math.random()*types.length)]
 }
-
-increaseBtn.addEventListener('click', (e) => {
-    size += 2
-    if(size > 50){
-        size = 50
-    }
-
-    updateSizeOnScreen()
-})
-
-decreaseBtn.addEventListener('click', (e) => {
-    size -= 2
-    if(size < 2){
-        size = 2
-    }
-
-    updateSizeOnScreen()
-})
-
-colorBoard.addEventListener('change', (e) =>
-    color = e.target.value
-)
-
-clearElem.addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height))
-
-
